@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Estética – Pro Estética</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-dark: #9e7a2e;
+    --text: #f0f0f0;
+    --text-soft: #999;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 24px 16px 48px;
+  }
+  .badge {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    color: #0a0a0a;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+    display: inline-block;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px 24px;
+    width: 100%;
+    max-width: 480px;
+    text-align: center;
+  }
+  #screen-intro h1 { font-size: 26px; font-weight: 800; line-height: 1.25; margin-bottom: 12px; }
+  #screen-intro h1 span {
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  #screen-intro p { color: var(--text-soft); font-size: 15px; line-height: 1.6; margin-bottom: 28px; }
+  .progress-bar-wrap { background: var(--surface2); border-radius: 100px; height: 5px; margin-bottom: 28px; overflow: hidden; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, var(--gold-dark), var(--gold-light)); border-radius: 100px; transition: width 0.4s ease; }
+  .question-label { font-size: 12px; font-weight: 600; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+  .question-text { font-size: 20px; font-weight: 700; line-height: 1.35; margin-bottom: 24px; }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option-btn {
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 16px 18px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .option-btn:hover { border-color: var(--gold); background: rgba(201,168,76,0.08); }
+  .option-btn.selected { border-color: var(--gold); background: rgba(201,168,76,0.12); color: var(--gold-light); }
+  .option-icon { font-size: 20px; flex-shrink: 0; width: 32px; text-align: center; }
+  .result-icon { font-size: 48px; margin-bottom: 12px; display: block; }
+  .result-name { font-size: 24px; font-weight: 800; background: linear-gradient(90deg, var(--gold), var(--gold-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
+  .result-desc { color: var(--text-soft); font-size: 15px; line-height: 1.65; margin-bottom: 20px; }
+  .before-after-label { font-size: 11px; font-weight: 600; color: var(--text-soft); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; text-align: left; }
+  .result-before-after { width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 20px; border: 1px solid var(--border); }
+  .result-before-after img { width: 100%; height: auto; display: block; }
+  .result-benefit { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; font-size: 14px; color: var(--text); text-align: left; margin-bottom: 24px; }
+  .result-benefit strong { color: var(--gold-light); display: block; margin-bottom: 6px; font-size: 12px; letter-spacing: 0.8px; text-transform: uppercase; }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold-light));
+    color: #0a0a0a;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 18px 24px;
+    width: 100%;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-secondary { background: transparent; border: 1.5px solid var(--border); border-radius: var(--radius); color: var(--text-soft); font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; padding: 14px 24px; width: 100%; cursor: pointer; margin-top: 10px; transition: all 0.2s; }
+  .btn-secondary:hover { border-color: var(--text-soft); color: var(--text); }
+  .btn-nav { display: flex; gap: 10px; margin-top: 24px; }
+  .btn-back { background: var(--surface2); border: 1.5px solid var(--border); border-radius: var(--radius); color: var(--text-soft); font-family: 'Inter', sans-serif; font-size: 14px; padding: 14px 18px; cursor: pointer; flex-shrink: 0; transition: all 0.2s; }
+  .btn-back:hover { border-color: var(--text-soft); color: var(--text); }
+  .btn-next { background: linear-gradient(135deg, var(--gold-dark), var(--gold-light)); border: none; border-radius: var(--radius); color: #0a0a0a; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700; padding: 14px 20px; cursor: pointer; flex: 1; transition: opacity 0.2s; opacity: 0.4; pointer-events: none; }
+  .btn-next.active { opacity: 1; pointer-events: all; }
+  .footer-note { color: var(--text-soft); font-size: 12px; margin-top: 20px; line-height: 1.5; }
+  .hidden { display: none !important; }
+  .fade-in { animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<!-- INTRO -->
+<div id="screen-intro" class="card fade-in">
+  <div class="badge">✨ Black Friday Pro Estética</div>
+  <h1>Descubra qual procedimento vai <span>transformar sua autoestima</span></h1>
+  <p>Responda 5 perguntas rápidas e receba sua indicação personalizada, com condições especiais de Black Friday.</p>
+  <button class="btn-primary" onclick="startQuiz()">
+    Descobrir meu tratamento →
+  </button>
+  <p class="footer-note">Leva menos de 1 minuto • Resultado na hora</p>
+</div>
+
+<!-- QUIZ -->
+<div id="screen-quiz" class="card fade-in hidden">
+  <div class="progress-bar-wrap">
+    <div class="progress-bar" id="progress-bar" style="width: 20%"></div>
+  </div>
+  <div class="question-label" id="question-label">Pergunta 1 de 5</div>
+  <div class="question-text" id="question-text"></div>
+  <div class="options" id="options-container"></div>
+  <div class="btn-nav">
+    <button class="btn-back" id="btn-back" onclick="goBack()">← Voltar</button>
+    <button class="btn-next" id="btn-next" onclick="goNext()">Próxima →</button>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="screen-result" class="card fade-in hidden">
+  <div class="badge">✨ Seu resultado</div>
+  <span class="result-icon" id="result-icon"></span>
+  <div class="result-name" id="result-name"></div>
+  <p class="result-desc" id="result-desc"></p>
+  <div id="result-image-wrap" style="display:none; margin-bottom:4px;">
+    <div class="before-after-label">📸 Antes e Depois</div>
+    <div class="result-before-after">
+      <img id="result-image" src="" alt="Antes e Depois">
+    </div>
+  </div>
+  <div class="result-benefit" id="result-benefit"></div>
+  <a id="btn-whatsapp" class="btn-primary" href="#" target="_blank" rel="noopener">
+    💬 Quero agendar na Black Friday
+  </a>
+  <button class="btn-secondary" onclick="restartQuiz()">Refazer o quiz</button>
+  <p class="footer-note">Ao clicar, você será direcionado ao WhatsApp da clínica.</p>
+</div>
+
+<script>
+  const questions = [
+    {
+      text: "Qual é sua principal preocupação hoje?",
+      options: [
+        { icon: "😮", text: "Flacidez no rosto ou pescoço", value: "flacidez" },
+        { icon: "🏃‍♀️", text: "Gordura localizada no corpo", value: "gordura" },
+        { icon: "🌿", text: "Pele sem viço, manchas ou poros", value: "pele" },
+        { icon: "⏳", text: "Rugas e linhas de expressão", value: "rugas" }
+      ]
+    },
+    {
+      text: "Qual região te incomoda mais?",
+      options: [
+        { icon: "😊", text: "Rosto e pescoço", value: "rosto" },
+        { icon: "💪", text: "Corpo (barriga, braços, coxas)", value: "corpo" }
+      ]
+    },
+    {
+      text: "Como você prefere o tratamento?",
+      options: [
+        { icon: "⚡", text: "Rápido, sem tempo de recuperação", value: "rapido" },
+        { icon: "🏆", text: "Não me importo com recuperação se o resultado for melhor", value: "intenso" }
+      ]
+    },
+    {
+      text: "Já fez algum procedimento estético antes?",
+      options: [
+        { icon: "✅", text: "Sim, já tenho experiência com procedimentos", value: "sim" },
+        { icon: "🌱", text: "Não, seria minha primeira vez", value: "nao" }
+      ]
+    },
+    {
+      text: "Com que urgência você quer resultados?",
+      options: [
+        { icon: "🔥", text: "Quero resultado o quanto antes", value: "urgente" },
+        { icon: "🌿", text: "Prefiro resultados progressivos e duradouros", value: "progressivo" }
+      ]
+    }
+  ];
+
+  const treatments = {
+    lavieen: {
+      name: "Lavieen",
+      icon: "✨",
+      desc: "O Lavieen é ideal para quem quer renovar a pele com tecnologia a laser fracionado. Trata manchas, poros dilatados e falta de viço com resultado progressivo e sem recuperação.",
+      benefit: "🎉 Black Friday: condições especiais para pacotes de Lavieen. Vagas limitadas.",
+      img: "images/lavieen.jpg"
+    },
+    ultraformer: {
+      name: "Ultraformer MPT",
+      icon: "🔬",
+      desc: "O Ultraformer MPT usa ultrassom microfocado para tratar flacidez no rosto, pescoço e corpo. Resultados visíveis sem cirurgia e sem tempo de recuperação.",
+      benefit: "🎉 Black Friday: agenda aberta com desconto especial no Ultraformer. Reserve já.",
+      img: "images/ultraformer_mpt.jpg"
+    },
+    hipro: {
+      name: "Hipro",
+      icon: "💎",
+      desc: "O Hipro combina radiofrequência e tecnologia avançada para tratar flacidez facial com eficiência e precisão. Indicado para quem busca resultado expressivo no rosto.",
+      benefit: "🎉 Black Friday: pacotes de Hipro com condições exclusivas. Vagas limitadas.",
+      img: "images/hipro.jpg"
+    },
+    limpeza: {
+      name: "Limpeza de Pele",
+      icon: "🌸",
+      desc: "A limpeza de pele profunda remove impurezas, desobstrui poros e deixa a pele radiante. O procedimento certo para quem quer pele limpa, saudável e com brilho natural.",
+      benefit: "🎉 Black Friday: limpeza de pele com preço especial. Agende agora.",
+      img: "images/limpeza_de_pele.jpg"
+    },
+    powershape: {
+      name: "Power Shape",
+      icon: "⚡",
+      desc: "O Power Shape combina radiofrequência, ultrassom cavitacional e vácuo para reduzir gordura localizada e celulite. Tratamento completo para remodelar o corpo sem cirurgia.",
+      benefit: "🎉 Black Friday: pacotes de Power Shape com desconto. Poucas vagas disponíveis.",
+      img: null
+    }
+  };
+
+  let currentQuestion = 0;
+  let answers = [];
+  const phone = "5511977538436";
+
+  function show(id) {
+    document.querySelectorAll('.card').forEach(el => el.classList.add('hidden'));
+    const el = document.getElementById(id);
+    el.classList.remove('hidden');
+    el.classList.remove('fade-in');
+    void el.offsetWidth;
+    el.classList.add('fade-in');
+  }
+
+  function startQuiz() {
+    currentQuestion = 0;
+    answers = [];
+    show('screen-quiz');
+    renderQuestion();
+  }
+
+  function renderQuestion() {
+    const q = questions[currentQuestion];
+    const total = questions.length;
+    const pct = ((currentQuestion + 1) / total) * 100;
+    document.getElementById('progress-bar').style.width = pct + '%';
+    document.getElementById('question-label').textContent = 'Pergunta ' + (currentQuestion + 1) + ' de ' + total;
+    document.getElementById('question-text').textContent = q.text;
+    const container = document.getElementById('options-container');
+    container.innerHTML = '';
+    q.options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      if (answers[currentQuestion] === opt.value) btn.classList.add('selected');
+      btn.innerHTML = '<span class="option-icon">' + opt.icon + '</span><span>' + opt.text + '</span>';
+      btn.addEventListener('click', () => selectOption(opt.value, btn));
+      container.appendChild(btn);
+    });
+    const nextBtn = document.getElementById('btn-next');
+    nextBtn.classList.toggle('active', !!answers[currentQuestion]);
+    nextBtn.textContent = currentQuestion === total - 1 ? 'Ver meu resultado →' : 'Próxima →';
+    document.getElementById('btn-back').style.display = currentQuestion === 0 ? 'none' : 'block';
+  }
+
+  function selectOption(value, btn) {
+    answers[currentQuestion] = value;
+    document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    document.getElementById('btn-next').classList.add('active');
+  }
+
+  function goNext() {
+    if (!answers[currentQuestion]) return;
+    if (currentQuestion < questions.length - 1) {
+      currentQuestion++;
+      renderQuestion();
+    } else {
+      showResult();
+    }
+  }
+
+  function goBack() {
+    if (currentQuestion > 0) { currentQuestion--; renderQuestion(); }
+  }
+
+  function showResult() {
+    const key = getRecommendation(answers);
+    const t = treatments[key];
+    document.getElementById('result-icon').textContent = t.icon;
+    document.getElementById('result-name').textContent = t.name;
+    document.getElementById('result-desc').textContent = t.desc;
+    document.getElementById('result-benefit').innerHTML = '<strong>Oferta Black Friday</strong>' + t.benefit;
+    const imgWrap = document.getElementById('result-image-wrap');
+    const imgEl = document.getElementById('result-image');
+    if (t.img) {
+      imgEl.src = t.img;
+      imgWrap.style.display = 'block';
+    } else {
+      imgWrap.style.display = 'none';
+    }
+    const msg = encodeURIComponent('Olá! Fiz o quiz no site e meu tratamento indicado foi ' + t.name + '. Quero saber mais sobre as condições de Black Friday! 🖤');
+    document.getElementById('btn-whatsapp').href = 'https://wa.me/' + phone + '?text=' + msg;
+    show('screen-result');
+  }
+
+  function getRecommendation(ans) {
+    const [preocupacao, regiao, preferencia] = ans;
+    if (preocupacao === 'pele') return 'limpeza';
+    if (preocupacao === 'gordura' || regiao === 'corpo') return preferencia === 'rapido' ? 'powershape' : 'hipro';
+    if (preocupacao === 'flacidez' || preocupacao === 'rugas') {
+      if (regiao === 'corpo') return preferencia === 'rapido' ? 'ultraformer' : 'hipro';
+      return preferencia === 'rapido' ? 'ultraformer' : 'lavieen';
+    }
+    return 'ultraformer';
+  }
+
+  function restartQuiz() { startQuiz(); }
+</script>
+</body>
+</html>
